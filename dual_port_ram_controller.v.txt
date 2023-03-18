@@ -1,0 +1,30 @@
+module dual_port_ram_controller (
+    input wire clk,
+    input wire reset,
+    input wire [63:0] write_data_1,
+    input wire [63:0] write_data_2,
+    input wire write_en,
+    input wire [7:0] address_1,
+    input wire [7:0] address_2,
+    output reg [63:0] read_data_1,
+    output reg [63:0] read_data_2
+);
+
+reg [63:0] memory [0:255];
+integer i;
+always @(posedge clk) begin
+    if (reset) begin
+        for (i = 0; i < 256; i = i + 1) begin
+            memory[i] <= 0;
+        end
+    end else begin
+        if (write_en) begin
+            memory[address_1] <= write_data_1;
+            memory[address_2] <= write_data_2;
+        end
+        read_data_1 <= memory[address_1];
+        read_data_2 <= memory[address_2];
+    end
+end
+
+endmodule
